@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+# Connect Admin App
+## Coding Exercise for VT Team
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a simple app created as a coding exercise for VT Team using React and NodeJS.
 
-## Available Scripts
+For this project I took the liberty of choosing Amplify as tool to build the code. I wanted to take the chance to learn something new while working on it. 
 
-In the project directory, you can run:
+The project is divided into two main folders:
+### Admin: 
+This folder contains all the Amplify configurations and backend code, plus the frontend code.
 
-### `npm start`
+**frontend code** is located under the **src** folder.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+To run it locally you just need to run this command from the admin folder
+```sh 
+ npm install
+ npm start
+```
+The url for testing is:
+https://d1bwdj2cifzw5l.cloudfront.net/
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Features you can edit on this folder
+- Company level configuration: Prompts and Open switch.
+- Brand level configuration: Phone number, brand name, open switch and contact lens switch.
+- Blacklist configuration: block numbers to contact any brand or the whole company.
 
-### `npm test`
+**amplify folder** Here you'll find all the backend code and configuration made through the AWS Amplify solution.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Features you can edit on this folder
 
-### `npm run build`
+- Add a api: 
+```sh
+amplify add api
+```
+- Add lambda functions:
+```sh
+amplify add function
+```
+- Add new dynamo tables:
+```sh
+amplify add storage
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Add Authorization process:
+```sh
+amplify add auth
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+For any other information contact me through: fidelduque@gmail.com
