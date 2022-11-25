@@ -1,0 +1,81 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-admin-dev-142832-authRole",
+      "UnauthRoleArn": "arn:aws:iam::606411929424:role/amplify-admin-dev-142832-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::606411929424:role/amplify-admin-dev-142832-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-admin-dev-142832-deployment",
+      "UnauthRoleName": "amplify-admin-dev-142832-unauthRole",
+      "StackName": "amplify-admin-dev-142832",
+      "StackId": "arn:aws:cloudformation:us-east-1:606411929424:stack/amplify-admin-dev-142832/7b534a60-65dc-11ed-bc30-12132830c079",
+      "AmplifyAppId": "d1v98eb87qz40x",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-admin-dev-142832-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "function": {
+        "openCheck": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/openCheck-54666c30584375514162-build.zip",
+          "admintable": "adminTable-dev"
+        },
+        "getLob": {
+          "admintable": "adminTable-dev",
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/getLob-75716b35367958794357-build.zip"
+        },
+        "getPrompts": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/getPrompts-774d3564686b4969654e-build.zip"
+        },
+        "checkBlacklist": {
+          "admintable": "adminTable-dev",
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/checkBlacklist-6e323748576f616b6236-build.zip"
+        },
+        "getEWT": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/getEWT-766c416e47756c454267-build.zip"
+        },
+        "cleanCTR": {
+          "connectInstanceId": "661d398c-c556-48ed-991e-7d4b649f6668",
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/cleanCTR-37624252673534335465-build.zip"
+        },
+        "adminUIGetBlacklistedNumbers": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/adminUIGetBlacklistedNumbers-4875552b5a6968477437-build.zip"
+        },
+        "blacklistAPI": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/blacklistAPI-363062474f6f5a307458-build.zip"
+        },
+        "promptsAPI": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/promptsAPI-66736a4c46313878554f-build.zip"
+        },
+        "brandsAPI": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/brandsAPI-55626747735276626549-build.zip"
+        },
+        "companyAPI": {
+          "deploymentBucketName": "amplify-admin-dev-142832-deployment",
+          "s3Key": "amplify-builds/companyAPI-4361504b336658334e46-build.zip"
+        }
+      },
+      "auth": {
+        "admin": {},
+        "userPoolGroups": {}
+      },
+      "api": {
+        "api96b4df43": {}
+      },
+      "storage": {
+        "adminTable": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
+  }
+}

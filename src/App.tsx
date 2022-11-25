@@ -1,26 +1,24 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import React from 'react';
+import {Auth} from "aws-amplify";
 import logo from './logo.svg';
 import './App.css';
-
-function App() {
+import MainMenu from './components/Menu';
+import {
+  withAuthenticator,
+  Button,
+} from "@aws-amplify/ui-react";
+import '@aws-amplify/ui-react/styles.css';
+//@ts-ignore
+function App({ signOut, user }) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    //@ts-ignore
+    <><div id='content'>
+      <MainMenu name={user.username} signOut={signOut}></MainMenu>
+    {/* <Button onClick={signOut}>Sign out</Button> */}
+   
+  </div></>
   );
 }
 
-export default App;
+export default withAuthenticator(App);

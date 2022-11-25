@@ -1,0 +1,14 @@
+{
+  "resourceName": "adminTable",
+  "tableName": "adminTable",
+  "partitionKey": {
+    "fieldName": "type",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "key",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

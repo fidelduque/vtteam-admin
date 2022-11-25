@@ -36,3 +36,44 @@
     transform: rotate(360deg);
   }
 }
+
+#BlockNumberButton{
+  margin-top: 30px;
+}
+
+#BrandSelectList {
+  margin-top: 10px;
+}
+#logoutButton {
+  margin-left: 65%;
+}
+#MainMenu {
+  margin-left: 2%;
+}
+#MainMenu a{
+  margin-right: 30px;
+}
+
+#GeneralPrompts {
+  margin-top: 20px;
+}
+
+#GeneralEmergency{
+  margin-top: 20px;
+}
+
+#GeneralContent{
+  padding: 20px;
+}
+ #BrandContent {
+  padding: 20px;
+}
+#BlacklistContent {
+  padding: 20px;
+}
+#OpenSwitch{
+  margin-top: 20px;
+}
+#BrandTopContent .amplify-switchfield{
+  margin-top: 20px!important;
+}

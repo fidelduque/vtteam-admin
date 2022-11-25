@@ -1,0 +1,9 @@
+{
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "connectInstanceId",
+      "environmentVariableName": "CONNECT_INSTANCE_ID"
+    }
+  ]
+}

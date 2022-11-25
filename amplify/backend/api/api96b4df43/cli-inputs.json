@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "paths": {
+    "/admin": {
+      "name": "/admin",
+      "lambdaFunction": "openCheck",
+      "permissions": {
+        "setting": "protected",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ],
+        "guest": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    },
+    "/blacklist": {
+      "name": "/blacklist",
+      "lambdaFunction": "blacklistAPI",
+      "permissions": {
+        "setting": "protected",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ],
+        "guest": [
+          "read"
+        ]
+      }
+    },
+    "/brands": {
+      "name": "/brands",
+      "lambdaFunction": "brandsAPI",
+      "permissions": {
+        "setting": "protected",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ],
+        "guest": [
+          "read"
+        ]
+      }
+    },
+    "/prompts": {
+      "name": "/prompts",
+      "lambdaFunction": "promptsAPI",
+      "permissions": {
+        "setting": "protected",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ],
+        "guest": [
+          "read"
+        ]
+      }
+    },
+    "/companySettings": {
+      "name": "/companySettings",
+      "lambdaFunction": "companyAPI",
+      "permissions": {
+        "setting": "protected",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ],
+        "guest": [
+          "read"
+        ]
+      }
+    }
+  }
+}

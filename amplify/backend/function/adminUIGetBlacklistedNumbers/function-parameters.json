@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "api": {
+      "api96b4df43": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "storage": {
+      "adminTable": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
