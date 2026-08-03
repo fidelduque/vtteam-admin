@@ -1,53 +1,80 @@
 -- DayFlow – Supabase PostgreSQL Schema
--- Run this in the Supabase SQL editor
+-- Safe to run repeatedly, and safe to run against a project that already has
+-- tables named tasks/completions/categories from an earlier app: CREATE TABLE
+-- IF NOT EXISTS alone would silently skip an existing table and leave it with
+-- the wrong columns, so every column is reconciled explicitly below.
 
--- ────────────────────────────────────────
--- Extensions
--- ────────────────────────────────────────
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ────────────────────────────────────────
--- Tables
+-- Tables (created if absent)
+-- ────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS categories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+);
+
+CREATE TABLE IF NOT EXISTS tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+);
+
+CREATE TABLE IF NOT EXISTS completions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+);
+
+-- ────────────────────────────────────────
+-- Columns (added if absent)
 -- ────────────────────────────────────────
 
 -- Categories: user-defined task labels with a color
-CREATE TABLE IF NOT EXISTS categories (
-  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id     UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  name        TEXT        NOT NULL,
-  color       TEXT        NOT NULL DEFAULT '#6366f1',
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+ALTER TABLE categories
+  ADD COLUMN IF NOT EXISTS user_id    UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  ADD COLUMN IF NOT EXISTS name       TEXT,
+  ADD COLUMN IF NOT EXISTS color      TEXT        NOT NULL DEFAULT '#6366f1',
+  ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
 -- Tasks: recurring or one-time task definitions
-CREATE TABLE IF NOT EXISTS tasks (
-  id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id      UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  title        TEXT        NOT NULL,
-  description  TEXT,
-  -- 'daily'  = Mon–Fri automatically
-  -- 'custom' = specific weekdays in the weekdays array (0=Sun … 6=Sat)
-  -- 'once'   = single date stored in once_date
-  schedule     TEXT        NOT NULL CHECK (schedule IN ('daily', 'custom', 'once')),
-  weekdays     SMALLINT[]  DEFAULT NULL,   -- used when schedule = 'custom'
-  start_date   DATE        NOT NULL,
-  end_date     DATE        DEFAULT NULL,   -- NULL = no end
-  once_date    DATE        DEFAULT NULL,   -- used when schedule = 'once'
-  category_id  UUID        REFERENCES categories(id) ON DELETE SET NULL,
-  "order"      INTEGER     NOT NULL DEFAULT 0,
-  archived     BOOLEAN     NOT NULL DEFAULT FALSE,
-  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+--   schedule 'daily'  = Mon–Fri automatically
+--   schedule 'custom' = specific weekdays in the weekdays array (0=Sun … 6=Sat)
+--   schedule 'once'   = single date stored in once_date
+ALTER TABLE tasks
+  ADD COLUMN IF NOT EXISTS user_id     UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  ADD COLUMN IF NOT EXISTS title       TEXT,
+  ADD COLUMN IF NOT EXISTS description TEXT,
+  ADD COLUMN IF NOT EXISTS schedule    TEXT,
+  ADD COLUMN IF NOT EXISTS weekdays    SMALLINT[],
+  ADD COLUMN IF NOT EXISTS start_date  DATE,
+  ADD COLUMN IF NOT EXISTS end_date    DATE,
+  ADD COLUMN IF NOT EXISTS once_date   DATE,
+  ADD COLUMN IF NOT EXISTS category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+  ADD COLUMN IF NOT EXISTS "order"     INTEGER     NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS archived    BOOLEAN     NOT NULL DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW();
 
 -- Completions: one row per (task × date) when a user checks off a task
-CREATE TABLE IF NOT EXISTS completions (
-  id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id         UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  task_id         UUID        NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
-  completed_date  DATE        NOT NULL,
-  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE (task_id, completed_date)
-);
+ALTER TABLE completions
+  ADD COLUMN IF NOT EXISTS user_id        UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  ADD COLUMN IF NOT EXISTS task_id        UUID REFERENCES tasks(id) ON DELETE CASCADE,
+  ADD COLUMN IF NOT EXISTS completed_date DATE,
+  ADD COLUMN IF NOT EXISTS created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW();
+
+-- ────────────────────────────────────────
+-- Constraints
+-- ────────────────────────────────────────
+
+-- One completion per task per day
+DO $$ BEGIN
+  ALTER TABLE completions ADD CONSTRAINT completions_task_date_key
+    UNIQUE (task_id, completed_date);
+EXCEPTION WHEN duplicate_table OR duplicate_object THEN NULL;
+END $$;
+
+-- Restrict schedule to the three supported values
+DO $$ BEGIN
+  ALTER TABLE tasks ADD CONSTRAINT tasks_schedule_check
+    CHECK (schedule IN ('daily', 'custom', 'once'));
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- ────────────────────────────────────────
 -- Indexes
@@ -63,22 +90,39 @@ CREATE INDEX IF NOT EXISTS idx_completions_task    ON completions(task_id, compl
 -- Row Level Security
 -- ────────────────────────────────────────
 ALTER TABLE categories  ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tasks        ENABLE ROW LEVEL SECURITY;
-ALTER TABLE completions  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tasks       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE completions ENABLE ROW LEVEL SECURITY;
 
--- Categories policies
+-- Dropped first so re-running the script never fails on an existing policy
+DROP POLICY IF EXISTS "categories_select" ON categories;
+DROP POLICY IF EXISTS "categories_insert" ON categories;
+DROP POLICY IF EXISTS "categories_update" ON categories;
+DROP POLICY IF EXISTS "categories_delete" ON categories;
+
 CREATE POLICY "categories_select" ON categories FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "categories_insert" ON categories FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "categories_update" ON categories FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "categories_delete" ON categories FOR DELETE USING (auth.uid() = user_id);
 
--- Tasks policies
+DROP POLICY IF EXISTS "tasks_select" ON tasks;
+DROP POLICY IF EXISTS "tasks_insert" ON tasks;
+DROP POLICY IF EXISTS "tasks_update" ON tasks;
+DROP POLICY IF EXISTS "tasks_delete" ON tasks;
+
 CREATE POLICY "tasks_select" ON tasks FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "tasks_insert" ON tasks FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "tasks_update" ON tasks FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "tasks_delete" ON tasks FOR DELETE USING (auth.uid() = user_id);
 
--- Completions policies
+DROP POLICY IF EXISTS "completions_select" ON completions;
+DROP POLICY IF EXISTS "completions_insert" ON completions;
+DROP POLICY IF EXISTS "completions_delete" ON completions;
+
 CREATE POLICY "completions_select" ON completions FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "completions_insert" ON completions FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "completions_delete" ON completions FOR DELETE USING (auth.uid() = user_id);
+
+-- ────────────────────────────────────────
+-- Refresh PostgREST's schema cache so the new columns are visible immediately
+-- ────────────────────────────────────────
+NOTIFY pgrst, 'reload schema';
