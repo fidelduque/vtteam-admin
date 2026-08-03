@@ -55,8 +55,12 @@ export default function TaskForm({ initialTask, categories, onSubmit, onClose }:
         archived: initialTask?.archived ?? false,
       })
       onClose()
-    } catch {
-      setError('Error al guardar. Inténtalo de nuevo.')
+    } catch (err: any) {
+      // Surface the real Postgres/PostgREST error — the generic message hid
+      // schema and RLS failures that are otherwise invisible from the UI.
+      console.error('Error al guardar tarea:', err)
+      const detail = err?.message ?? String(err)
+      setError(err?.code ? `${err.code}: ${detail}` : detail)
     } finally {
       setSaving(false)
     }
